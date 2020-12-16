@@ -506,7 +506,7 @@ class MainWindow(QtWidgets.QMainWindow):
         try:
             filename, _ = QtWidgets.QFileDialog.getSaveFileName(
                 self, 
-                "LIAS Save figure",
+                "LIAS Save Figure",
                 "", 
                 "PNG file (*.png)"
             )
@@ -524,7 +524,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self, 
                 "LIAS Save Lines",
                 "", 
-                "CSV  (*.csv)"
+                "CSV file (*.csv)"
             )
             self.atomicdata.to_csv(filename)
             
