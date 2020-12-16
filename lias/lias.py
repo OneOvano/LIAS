@@ -517,7 +517,7 @@ class MainWindow(QtWidgets.QMainWindow):
             
     def save_table(self):
         """
-        Saver for current figure
+        Saver for current table
         """
         try:
             filename, _ = QtWidgets.QFileDialog.getSaveFileName(
