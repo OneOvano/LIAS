@@ -1,16 +1,13 @@
-import Spectra
+import numpy as np
+import matplotlib.pyplot as plt
+
+import UI_MainWindow
 import PandasModel
 import Tools
 
-import matplotlib.pyplot as plt
-
 from PyQt5 import QtWidgets, QtCore
-
-from matplotlib.figure import Figure
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.widgets import SpanSelector
-from matplotlib.backends.backend_qt5agg import FigureCanvas
-
-pd.options.mode.chained_assignment = None
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -65,7 +62,7 @@ class MainWindow(QtWidgets.QMainWindow):
             ind = np.abs(part[:, 1] - value).argmin()
             cont_point.append([part[ind, 0], part[ind, 1]])
         
-        self.cont = calc_cont(cont_point, deg)
+        self.cont = Tools.calc_cont(cont_point, deg)
 
         return cont_point, self.cont
                            
@@ -83,7 +80,7 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             wln_sel, flx_sel, cnt_sel, cnt_lvl = self.find_area(num)
 
-            mc = calc_masc(wln_sel, flx_sel)
+            mc = Tools.calc_masc(wln_sel, flx_sel)
             theor = self.atomicdata['Wavelength, Å'].iloc[num]
             
             self.atomicdata['Obs. wavelength'].iloc[num] = mc
@@ -107,7 +104,7 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             wln_sel, flx_sel, cnt_sel, cnt_lvl = self.find_area(num)
             
-            intensity = calc_int(wln_sel, flx_sel, cnt_sel)
+            intensity = Tools.calc_int(wln_sel, flx_sel, cnt_sel)
 
             self.atomicdata['Intensity'].iloc[num] = intensity
             self.model = PandasModel(self.atomicdata)
@@ -130,11 +127,11 @@ class MainWindow(QtWidgets.QMainWindow):
         else:    
             wln_sel, flx_sel, cnt_sel, cnt_lvl = self.find_area(num)
             
-            popt = fit_gauss(wln_sel, flx_sel, cnt_lvl)
+            popt = Tools.fit_gauss(wln_sel, flx_sel, cnt_lvl)
             
             self.ax1.plot(
                 wln_sel, 
-                gauss_function(wln_sel, *popt) + cnt_lvl, 
+                Tools.gauss_function(wln_sel, *popt) + cnt_lvl,
                 color='#fc5a50'
             )
             
@@ -143,7 +140,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.atomicdata['Obs.-Theor. (Gauss)'].iloc[num] = popt[1] - theor
             fwhm = 2 * np.sqrt(2 * np.log(2)) * popt[2]
             self.atomicdata['FWHM (Gauss)'].iloc[num] = fwhm
-            intense = np.trapz(gauss_function(wln_sel, *popt), wln_sel)
+            intense = np.trapz(Tools.gauss_function(wln_sel, *popt), wln_sel)
             self.atomicdata['Intensity (Gauss)'].iloc[num] = intense
             self.model = PandasModel(self.atomicdata)
             self.ui.table.setModel(self.model)
@@ -224,26 +221,26 @@ class MainWindow(QtWidgets.QMainWindow):
         ax2 = self.fig.add_subplot(212)
         ax2.get_yaxis().set_visible(False)
         ax2.set_facecolor('k')
-        ax2.set_ylim([0.0,2.1]) 
+        ax2.set_ylim([0.0, 2.1])
         self.ax1.set_xlim(low_w, upp_w)
         ax2.set_xlim([low_w, upp_w])  
         cnt = self.ui.showcont.checkState()
         cont_point, cont = self.continuum() 
         
         if lsc == 2:
-            self.ax1.semilogy(self.spec.Object_Spectrum[:,0], 
-                              self.spec.Object_Spectrum[:,1], 
+            self.ax1.semilogy(self.spec.Object_Spectrum[:, 0],
+                              self.spec.Object_Spectrum[:, 1],
                               '-', color='#fff9d0')
             if cnt == 2:
-                self.ax1.semilogy(self.spec.Object_Spectrum[:,0], 
+                self.ax1.semilogy(self.spec.Object_Spectrum[:, 0],
                                   cont, '-', color='#98eff9')
              
         else:
-            self.ax1.plot(self.spec.Object_Spectrum[:,0], 
-                          self.spec.Object_Spectrum[:,1], 
+            self.ax1.plot(self.spec.Object_Spectrum[:, 0],
+                          self.spec.Object_Spectrum[:, 1],
                           '-', color='#fff9d0')
             if cnt == 2:
-                self.ax1.plot(self.spec.Object_Spectrum[:,0], 
+                self.ax1.plot(self.spec.Object_Spectrum[:, 0],
                               cont, '-', color='#98eff9')
                    
         ysc = self.ui.yscale.value()
@@ -382,7 +379,7 @@ class MainWindow(QtWidgets.QMainWindow):
         
     def __init__(self, spec):       
         super().__init__()
-        self.ui = Ui_MainWindow()
+        self.ui = UI_MainWindow.Ui_MainWindow()
         self.ui.setupUi(self)  
         
         wln_min = spec.Object_Spectrum[0, 0]
@@ -408,7 +405,7 @@ class MainWindow(QtWidgets.QMainWindow):
         
         self.fig = plt.figure(figsize=(8, 6.5))
         self.selection = np.zeros(shape=(len(spec.Object_Spectrum[:, 0]), 3))
-        self.canvas = FigureCanvas(self.fig)
+        self.canvas = FigureCanvasQTAgg(self.fig)
         scene = QtWidgets.QGraphicsScene(self)
         scene.addWidget(self.canvas)
         self.ui.graphicsView.setScene(scene)
@@ -429,6 +426,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.cont.clicked.connect(self.rescale)
         self.ui.masc.clicked.connect(self.masc)
         self.ui.integrate.clicked.connect(self.intense)
-        self.ui.gauss.clicked.connect(self.gauss)
+        self.ui.gauss.clicked.connect(self.fit_gauss)
         self.ui.savefig.clicked.connect(self.save_figure) 
         self.ui.savetab.clicked.connect(self.save_table)

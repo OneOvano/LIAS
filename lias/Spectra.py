@@ -3,6 +3,9 @@ import pandas as pd
 from urllib.parse import urlencode
 
 
+pd.options.mode.chained_assignment = None
+
+
 def _load(ion, low_w, upp_w, allowed_out=1, forbid_out=1):
     """
     Parser for downloading atomic data from NIST server
@@ -30,7 +33,7 @@ def _load(ion, low_w, upp_w, allowed_out=1, forbid_out=1):
 
     url = nist_db_url + urlencode(settings)
 
-    df = pd.read_html(URL)
+    df = pd.read_html(url)
     df = pd.DataFrame(df[3])
     df.drop(['Acc.'], axis='columns', inplace=True)
     df.columns = [

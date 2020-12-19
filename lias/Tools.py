@@ -21,7 +21,7 @@ def gauss_function(x, a, x0, sigma):
     a * np.exp(-(x - x0)**2 / (2 * sigma**2))
     """
 
-    return a * np.exp(-(x - x0)**2 / (2 * sigma**2))
+    return a * np.exp(-(x - x0) ** 2 / (2 * sigma ** 2))
 
 
 def calc_cont(points, deg):
@@ -31,7 +31,7 @@ def calc_cont(points, deg):
     Arguments:
 
     points (float x float array) - selected points
-    deg - polynome degree
+    deg - polynomial degree
     _____________________
     Returns:
 
@@ -58,7 +58,7 @@ def calc_masc(wln_sel, flx_sel):
     Mass center of selected area
     """
 
-    mx = np.sum(wln_sel[k] * flx_sel[k] for k in range(nf - ns))
+    mx = np.sum(wln_sel * flx_sel)
     m = np.sum(flx_sel)
     mc = mx / m
 
