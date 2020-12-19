@@ -429,6 +429,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.cont.clicked.connect(self.rescale)
         self.ui.masc.clicked.connect(self.masc)
         self.ui.integrate.clicked.connect(self.intense)
-        self.ui.gauss.clicked.connect(self.fit_gauss)
+        self.ui.gauss.clicked.connect(self.gauss)
         self.ui.savefig.clicked.connect(self.save_figure) 
         self.ui.savetab.clicked.connect(self.save_table)
