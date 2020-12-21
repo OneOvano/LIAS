@@ -3,7 +3,7 @@ import lias
 import numpy as np
 
 def main(filename, ion):
-    spec = loadtxt(filename)
+    spec = np.loadtxt(filename)
     sp = Spectra(spec, ion)
     DoWork(sp)
 
