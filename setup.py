@@ -14,6 +14,8 @@ setup(
         'matplotlib>=3.0.0',
         'PyQt5'
     ),
+    gui_scripts=(lias = lias.main)console_scripts =
+    issnake = ser.snake:main
     test_suite='test',
     author='Vano',
     author_email='iv.shaposhnikov@gmail.com',
