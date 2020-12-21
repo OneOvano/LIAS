@@ -4,6 +4,9 @@ import unittest
 import numpy as np
 
 
+EPS = 1e-3
+
+
 class test_spectra(unittest.TestCase):
     """
     Testing of parser and Spectra methods
@@ -53,7 +56,7 @@ class test_tools(unittest.TestCase):
         y = x**3
         cnt = np.linspace(0, 0, 100)
         target = 0.25
-        np.testing.assert_allclose(lias.Tools.calc_int(x, y, cnt), target)
+        np.testing.assert_allclose(lias.Tools.calc_int(x, y, cnt), target, EPS)
 
     def test_gauss(self):
         x = np.linspace(-1, 1, 100)
@@ -61,9 +64,8 @@ class test_tools(unittest.TestCase):
         y = lias.Tools.gauss_function(x, *target)
         cnt = 0
         output = lias.Tools.fit_gauss(x, y, cnt)
-        accuracy = np.abs(np.array(output - target))
-        np.testing.assert_allclose(accuracy, target)
+        np.testing.assert_allclose(output, target, atol=EPS)
 
-
+        
 if __name__ == '__main__':
     unittest.main()
