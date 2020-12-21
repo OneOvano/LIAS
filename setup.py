@@ -14,7 +14,6 @@ setup(
         'matplotlib>=3.0.0',
         'PyQt5'
     ),
-    gui_scripts=(dowork = lias.main),
     test_suite='test',
     author='Vano',
     author_email='iv.shaposhnikov@gmail.com',
