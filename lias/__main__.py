@@ -1,7 +1,11 @@
+import sys
 import lias
-from numpy import loadtxt
+import numpy as np
 
 def main(filename, ion):
     spec = loadtxt(filename)
     sp = Spectra(spec, ion)
     DoWork(sp)
+
+if __name__ == '__main__':
+    main(sys.argv[0], sys.argv[1])
