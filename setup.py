@@ -12,7 +12,7 @@ setup(
         'urllib>=1.7',
         'scipy>=1.5.0',
         'lxml>=4.5.0',
-        'matplotlib>=3.0.0'
+        'matplotlib>=3.0.0',
         'PyQt5'
     ),
     test_suite='test',
